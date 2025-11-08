@@ -1,4 +1,5 @@
-import { html } from 'lit-html';
+import '../types.js'; // Import type extensions
+import { html } from 'lit';
 import { Ancestor, Path, Text, Node, Editor, Range } from 'slate';
 import { RenderLeaf, RenderLeafAttributes, RenderLeafProps } from '../models';
 import { LitEditor, LitEditorHelper } from '../plugin/lit-editor';

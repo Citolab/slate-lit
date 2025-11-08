@@ -1,11 +1,13 @@
+import './types.js'; // Import type extensions
 import { isHotkey } from 'is-hotkey';
-import { LitElement, customElement, html, query, property, css } from 'lit-element';
-import { Editor, Node, Range, Transforms } from 'slate';
+import { LitElement, html, css } from 'lit';
+import { customElement, query, property } from 'lit/decorators.js';
+import { Editor, Node, Range, Transforms, Element, Text } from 'slate';
 import { RenderElementAttributes } from './models';
 import { SlateLit } from './slate-lit.component';
-import { ifDefined } from 'lit-html/directives/if-defined';
-import { styleMap } from 'lit-html/directives/style-map.js';
-import { classMap } from 'lit-html/directives/class-map.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { styleMap } from 'lit/directives/style-map.js';
+import { classMap } from 'lit/directives/class-map.js';
 
 import { Toolbar } from './toolbar.component';
 
@@ -158,7 +160,7 @@ export class RichTextEditor extends LitElement {
 
     const isList = LIST_TYPES.includes(format);
     Transforms.unwrapNodes(editor, {
-      match: (n) => LIST_TYPES.includes(n.type as string),
+      match: (n) => Element.isElement(n) && LIST_TYPES.includes((n as any).type),
       split: true,
     });
 
@@ -184,7 +186,7 @@ export class RichTextEditor extends LitElement {
 
   isBlockActive = (editor: Editor, format: string) => {
     const [match] = Editor.nodes(editor, {
-      match: (n) => n.type === format,
+      match: (n) => Element.isElement(n) && (n as any).type === format,
     });
 
     return !!match;
@@ -197,7 +199,8 @@ export class RichTextEditor extends LitElement {
 
   renderElement = (props: { attributes: RenderElementAttributes; children: any; element: Node }) => {
     const { element, attributes, children } = props;
-    switch (element.type) {
+    const elementType = Element.isElement(element) ? (element as any).type : 'paragraph';
+    switch (elementType) {
       case 'block-quote':
         return html`<blockquote
           id=${attributes.id}
@@ -276,23 +279,25 @@ export class RichTextEditor extends LitElement {
   }) => {
     const { leaf, attributes, children } = props;
     let modifiedChildren = children;
-    if (leaf.bold) {
+    const leafData = leaf as any;
+    
+    if (leafData.bold) {
       modifiedChildren = html`<strong>${modifiedChildren}</strong>`;
     }
 
-    if (leaf.code) {
+    if (leafData.code) {
       modifiedChildren = html`<code style=${styleMap(this.codeStyle)}>${modifiedChildren}</code>`;
     }
 
-    if (leaf.italic) {
+    if (leafData.italic) {
       modifiedChildren = html`<em>${modifiedChildren}</em>`;
     }
 
-    if (leaf.underline) {
+    if (leafData.underline) {
       modifiedChildren = html`<u>${modifiedChildren}</u>`;
     }
 
-    if (leaf.highlight) {
+    if (leafData.highlight) {
       modifiedChildren = html`<span style="color: var(--slate-lit-highlight-color, hsl(0, 70%, 50%))">${modifiedChildren}</span>`;
     }
 

@@ -1,6 +1,8 @@
-import { css, customElement, html, LitElement, query } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { styleMap } from 'lit-html/directives/style-map';
+import './types.js'; // Import type extensions
+import { css, html, LitElement } from 'lit';
+import { customElement, query } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import { Range as SlateRange} from 'slate';
 import { SlateLit } from './slate-lit.component';
 declare const window: any;

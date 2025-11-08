@@ -1,5 +1,7 @@
-import { html, css, LitElement, property, customElement, query } from 'lit-element';
-import throttle from 'lodash-es/throttle';
+import './types.js'; // Import type extensions
+import { html, css, LitElement } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
+import throttle from 'lodash-es/throttle.js';
 
 import { withLit } from './plugin/with-lit';
 import { createEditor, Editor, Node, Transforms, Range, Point, Element, Path } from 'slate';
@@ -630,7 +632,7 @@ export class SlateLit extends LitElement {
       // default, and calling `preventDefault` hides the cursor.
       const node = this.domHelper.toSlateNode(event.target as DOMNode)
 
-      if (Editor.isVoid(this.editor, node)) {
+      if (Element.isElement(node) && Editor.isVoid(this.editor, node)) {
         event.preventDefault()
         return;
       }

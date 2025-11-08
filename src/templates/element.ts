@@ -1,5 +1,6 @@
-import { html } from 'lit-html';
-import { ifDefined } from 'lit-html/directives/if-defined';
+import '../types.js'; // Import type extensions
+import { html } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { Ancestor, Descendant, Editor, Element, Node, Range } from 'slate';
 import { Decorate, RenderElement, RenderElementAttributes, RenderElementProps, RenderLeaf } from '../models';
 import { LitEditor, LitEditorHelper } from '../plugin/lit-editor';

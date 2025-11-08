@@ -167,7 +167,7 @@ export class DomHelper {
     try {
       targetEl = (isDOMElement(target) ? target : target.parentElement) as HTMLElement;
     } catch (err) {
-      if (!err.message.includes('Permission denied to access property "nodeType"')) {
+      if (!(err as Error).message.includes('Permission denied to access property "nodeType"')) {
         throw err;
       }
     }
@@ -188,7 +188,7 @@ export class DomHelper {
 
   isTargetInsideVoid(target: EventTarget | null): boolean {
     const slateNode = this.hasDOMNode(target as DOMNode, {}) && this.toSlateNode(target as DOMNode);
-    return Editor.isVoid(this.editor, slateNode);
+    return slateNode && Element.isElement(slateNode) && Editor.isVoid(this.editor, slateNode);
   }
 
   insertData(data: DataTransfer): void {
@@ -551,7 +551,7 @@ export class DomHelper {
     // If the drop target is inside a void node, move it into either the
     // next or previous node, depending on which side the `x` and `y`
     // coordinates are closest to.
-    if (Editor.isVoid(this.editor, node)) {
+    if (Element.isElement(node) && Editor.isVoid(this.editor, node)) {
       const rect = target.getBoundingClientRect();
       const isPrev = this.editor.isInline(node)
         ? x - rect.left < rect.left + rect.width - x
